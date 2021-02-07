@@ -11,7 +11,7 @@ import TextField from "material-ui/TextField";
 import SnackBar from "material-ui/Snackbar";
 import Card from "material-ui/Card";
 import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper"; 
-import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
+import { RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
 
 const API_BASE = "http://localhost:5000/";
@@ -45,12 +45,12 @@ class StepAppt extends Component {
     this.setState({ appointmentDate: date, confirmationTextVisible: true });
   }
 
-  handleSetAppointmentSlot(slot) {
-    this.setState({ appointmentSlot: slot });
-  }
-  handleSetAppointmentMeridiem(meridiem) {
-    this.setState({ appointmentMeridiem: meridiem });
-  }
+  // handleSetAppointmentSlot(slot) {
+  //   this.setState({ appointmentSlot: slot });
+  // }
+  // handleSetAppointmentMeridiem(meridiem) {
+  //   this.setState({ appointmentMeridiem: meridiem });
+  // }
   handleSubmit() {
     this.setState({ confirmationModalOpen: false });
     const newAppointment = {
@@ -194,46 +194,46 @@ class StepAppt extends Component {
       </section>
     );
   }
-  renderAppointmentTimes() {
-    if (!this.state.isLoading) {
-      const slots = [...Array(8).keys()];
-      return slots.map(slot => {
-        const appointmentDateString = moment(this.state.appointmentDate).format(
-          "YYYY-DD-MM"
-        );
-        const time1 = moment()
-          .hour(9)
-          .minute(0)
-          .add(slot, "hours");
-        const time2 = moment()
-          .hour(9)
-          .minute(0)
-          .add(slot + 1, "hours");
-        const scheduleDisabled = this.state.schedule[appointmentDateString]
-          ? this.state.schedule[
-              moment(this.state.appointmentDate).format("YYYY-DD-MM")
-            ][slot]
-          : false;
-        const meridiemDisabled = this.state.appointmentMeridiem
-          ? time1.format("a") === "am"
-          : time1.format("a") === "pm";
-        return (
-          <RadioButton
-            label={time1.format("h:mm a") + " - " + time2.format("h:mm a")}
-            key={slot}
-            value={slot}
-            style={{
-              marginBottom: 15,
-              display: meridiemDisabled ? "none" : "inherit"
-            }}
-            disabled={scheduleDisabled || meridiemDisabled}
-          />
-        );
-      });
-    } else {
-      return null;
-    }
-  }
+  // renderAppointmentTimes() {
+  //   if (!this.state.isLoading) {
+  //     const slots = [...Array(8).keys()];
+  //     return slots.map(slot => {
+  //       const appointmentDateString = moment(this.state.appointmentDate).format(
+  //         "YYYY-DD-MM"
+  //       );
+  //       const time1 = moment()
+  //         .hour(9)
+  //         .minute(0)
+  //         .add(slot, "hours");
+  //       const time2 = moment()
+  //         .hour(9)
+  //         .minute(0)
+  //         .add(slot + 1, "hours");
+  //       const scheduleDisabled = this.state.schedule[appointmentDateString]
+  //         ? this.state.schedule[
+  //             moment(this.state.appointmentDate).format("YYYY-DD-MM")
+  //           ][slot]
+  //         : false;
+  //       const meridiemDisabled = this.state.appointmentMeridiem
+  //         ? time1.format("a") === "am"
+  //         : time1.format("a") === "pm";
+  //       return (
+  //         <RadioButton
+  //           label={time1.format("h:mm a") + " - " + time2.format("h:mm a")}
+  //           key={slot}
+  //           value={slot}
+  //           style={{
+  //             marginBottom: 15,
+  //             display: meridiemDisabled ? "none" : "inherit"
+  //           }}
+  //           disabled={scheduleDisabled || meridiemDisabled}
+  //         />
+  //       );
+  //     });
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   //Logic for Steps taken to proceed from 1 action to another. 
   renderStepActions(step) {
@@ -292,20 +292,19 @@ class StepAppt extends Component {
         />
       </div>
     );
-    const modalActions = [
-      /*
-      <FlatButton
-        label="Cancel"
-        primary={false}
-        onClick={() => this.setState({ confirmationModalOpen: false })}
-      />,
-      <FlatButton
-        label="Confirm"
-        style={{ backgroundColor: "#00C853 !important" }}
-        primary={true}
-        onClick={() => this.handleSubmit()}
-      />*/
-    ];
+    // const modalActions = [
+    //   <FlatButton
+    //     label="Cancel"
+    //     primary={false}
+    //     onClick={() => this.setState({ confirmationModalOpen: false })}
+    //   />,
+    //   <FlatButton
+    //     label="Confirm"
+    //     style={{ backgroundColor: "#00C853 !important" }}
+    //     primary={true}
+    //     onClick={() => this.handleSubmit()}
+    //   />
+    // ];
     return (
       <div>
         <section
@@ -358,15 +357,14 @@ class StepAppt extends Component {
                   {DatePickerExampleSimple()}
                   {this.renderStepActions(0)}
                     <SelectField
-                    floatingLabelText="AM/PM"
+                    floatingLabelText="Select Time and Date"
                     value={data.appointmentMeridiem}
                     onChange={(evt, key, payload) =>
                       this.handleSetAppointmentMeridiem(payload)
                     }
-                    selectionRenderer={value => (value ? "PM" : "AM")}
                     >
-                      <MenuItem value={0} primaryText="AM" />
-                      <MenuItem value={1} primaryText="PM" />
+                      <MenuItem value={0} primaryText="Insert Available Clinics Time and Date" />
+                      
                     </SelectField>            
                       <RadioButtonGroup
                         style={{
@@ -377,7 +375,7 @@ class StepAppt extends Component {
                         defaultSelected={data.appointmentSlot}
                         onChange={(evt, val) => this.handleSetAppointmentSlot(val)}
                       >
-                          {this.renderAppointmentTimes()}
+                          {/* {this.renderAppointmentTimes()} */}
                         </RadioButtonGroup>
                         {this.renderStepActions(1)}
                     </StepContent>
@@ -463,7 +461,7 @@ class StepAppt extends Component {
           <Dialog
             modal={true}
             open={confirmationModalOpen}
-            actions={modalActions}
+            // actions={modalActions}
             title="Confirm your appointment"
           >
             {this.renderAppointmentConfirmation()}
