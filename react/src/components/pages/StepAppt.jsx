@@ -1,4 +1,11 @@
-import React, { Component } from "react";
+/* eslint-disable */
+import React, { Component, useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 /*import AppBar from "material-ui/AppBar";*/
 import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
@@ -13,16 +20,17 @@ import Card from "material-ui/Card";
 import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper"; 
 import { RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
-
-const API_BASE = "http://localhost:5000/";
+import appointmentAPI from '../../services/appAxios';
 class StepAppt extends Component {
   constructor(props, context) {
+
     super(props, context);
 
     this.state = {
-      clinic: "",
-      firstName: "",
-      lastName: "",
+      clinicList: [],
+      selectClinic: "",
+      first_name: "",
+      last_name: "", 
       email: "",
       schedule: [],
       confirmationModalOpen: false,
@@ -35,12 +43,30 @@ class StepAppt extends Component {
       stepIndex: 0
     };
   }
-  // componentWillMount() {
-  //   axios.get(API_BASE + `api/retrieveSlots`).then(response => {
-  //     console.log("response via db: ", response.data);
-  //     this.handleDBReponse(response.data);
-  //   });
-  // }
+  
+  componentWillMount() {
+    axios.get().then(response => {
+      console.log("response via db: ", response.data);
+      this.handleDBReponse(response.data);
+    });
+  }
+
+  getClinic() {
+    axios.get(appointmentAPI.getClinic).then((response)=> {
+      return response.json();
+    })
+    .then(data=> {
+      let clinicList = data.map(clinicList=> {
+        return {value: clinicList, display: selectClinic}
+      });
+      this.setState({
+        selectClinic: [{value: "", display: '(Select your Vaccination Clinic)'}].concat(clinicList)
+      });
+    }).catch(error => {
+      console.log(error)
+    });
+  }
+
   handleSetAppointmentDate(date) {
     this.setState({ appointmentDate: date, confirmationTextVisible: true });
   }
@@ -95,12 +121,7 @@ class StepAppt extends Component {
     }
   };
 
-  handleClinic = (e) => {
-    this.setState({
-      clinic: e.target.value
-
-    })
-  }
+  
   /*
   validateEmail(email) {
     const regex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -267,6 +288,7 @@ class StepAppt extends Component {
 
   render() {
     const {
+      clinicList,
       /*finished,*/
       isLoading,
       smallScreen,
@@ -329,24 +351,33 @@ class StepAppt extends Component {
                 <StepLabel>
                   Start Booking your Vaccination
                 </StepLabel>
-
                 <StepContent>
-                    <SelectField LabelText="Vaccination Centres">
-                      
-                      <MenuItem primaryText="Punggol Polyclinic" id="Punggol Polyclinic" value="Punggol Polyclinic" onClick={ e => {this.handleClinic(e)}}/>
-                      <MenuItem primaryText="Woodlands Polyclinic"/>
-                      <MenuItem primaryText="Tampines Polyclinic"/>
-                      <MenuItem primaryText="Hougang Polyclinic"/>
-                      <MenuItem primaryText="Ang Mo Kio Polyclinic"/>
-                      <MenuItem primaryText="Tampines Polyclinic"/>
-                      <MenuItem primaryText="Queenstown Polyclinic"/>
-                      <MenuItem primaryText="Bukit Batok Polyclinic"/>
-                      <MenuItem primaryText="Pioneer Polyclinic"/>
-                      <MenuItem primaryText="Outram Polyclinic"/>
 
+                    <SelectField LabelText="Vaccination Centres"
+                    value={this.state.selectClinic}
+                    onChange={e =>
+                      this.setState({
+                        selectClinic: e.target.value,
+                        validationError:
+                          e.target.value === ""
+                            ? "You must select your Vaccination Centres"
+                            : ""
+                      })
+                    }
+                    >
+                      {this.state.clinicList.map(clinicList => (
+                        <MenuItem
+                        primaryText={clinicList.value}
+                        key={clinicList.value}
+                        value={clinicList.value} 
+                        >
+                        {clinicList.display}
+                        </MenuItem>
+                      ))}
                     </SelectField>
+                    {this.renderStepActions()}
 
-                </StepContent>
+                </StepContent>  
                   <Step disabled={!data.appointmentDate}>
                 </Step>
 
@@ -356,6 +387,7 @@ class StepAppt extends Component {
                  <StepContent>
                   {DatePickerExampleSimple()}
                   {this.renderStepActions(0)}
+                   
                     <SelectField
                     floatingLabelText="Select Time and Date"
                     value={data.appointmentMeridiem}

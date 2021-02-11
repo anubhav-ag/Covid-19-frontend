@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect }from 'react';
+import Axios from 'axios';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -48,6 +49,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp() {
+  const []
+
   const classes = useStyles();
     <div>
         <SiteHeader/>

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 
-const baseUrl = 'http://localhost:5000/api/v1'
+const baseUrl = 'http://localhost:5000/'
 
 // https://github.com/axios/axios#creating-an-instance
 const axiosInstance = axios.create({
@@ -17,11 +17,11 @@ const appointmentAPI = {
         }))
     },
     getClinic: () => {
-        return axiosInstance.get('/products')
+        return axiosInstance.get('api/v1/clinics')
     },
     getAppointment: (slug) => {
         return axiosInstance.get(`/products/${slug}`)
     }
 }
 
-export default appointmentAPI
+export default appointmentAPI;
