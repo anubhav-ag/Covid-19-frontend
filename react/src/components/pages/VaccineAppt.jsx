@@ -5,7 +5,7 @@ import SiteHeader from '../SiteHeader'
 // import SignUp from './SignUp'
 // eslint-disable-next-line no-unused-vars
 import axios from 'axios'
-import Login from './Login';
+// import Login from './Login';
 
 
 
@@ -14,8 +14,7 @@ class VaccineAppt extends Component {
     
     render() {
         return (
-         <div>   
-             <Login />
+         <div> 
              <SiteHeader />
              <StepAppt />
         </div>

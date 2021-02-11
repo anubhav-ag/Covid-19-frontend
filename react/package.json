@@ -6,9 +6,10 @@
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.3",
-    "@testing-library/user-event": "^12.6.2",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.6.3",
     "axios": "^0.21.1",
+    "http-proxy-middleware": "^1.0.6",
     "material-ui": "^0.20.0",
     "material-ui-icons": "^1.0.0-beta.36",
     "moment": "^2.29.1",
@@ -50,5 +51,8 @@
   "proxy": "http://localhost:5000",
   "devDependencies": {
     "babel-eslint": "^10.1.0"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }
