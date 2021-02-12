@@ -10,17 +10,18 @@ import MenuItem from "material-ui/MenuItem";
 import TextField from "material-ui/TextField";
 import SnackBar from "material-ui/Snackbar";
 import Card from "material-ui/Card";
-import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper"; 
+import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
+import ApptService from "../../services/appAxios";
 
-const API_BASE = "http://localhost:5000/";
 class StepAppt extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      clinic: "",
+      clinics: [],
+      appointmentDate: {},
       firstName: "",
       lastName: "",
       email: "",
@@ -32,17 +33,41 @@ class StepAppt extends Component {
       validPhone: true,
       finished: false,
       smallScreen: window.innerWidth < 768,
-      stepIndex: 0
+      stepIndex: 0,
+      value: -1,
     };
   }
-  // componentWillMount() {
-  //   axios.get(API_BASE + `api/retrieveSlots`).then(response => {
-  //     console.log("response via db: ", response.data);
-  //     this.handleDBReponse(response.data);
-  //   });
-  // }
-  handleSetAppointmentDate(date) {
-    this.setState({ appointmentDate: date, confirmationTextVisible: true });
+  componentDidMount() {
+    this.listClinics();
+  }
+
+  listClinics() {
+    ApptService.listClinics().then((response) => {
+      this.setState({
+        clinics: response.data.clinics,
+      });
+    });
+  }
+  handleClinicChange = (event, index, value) => {
+    this.setState({ value });
+    this.handleNext();
+  };
+
+  getSlots() {
+    ApptService.getSlots(this.state.appointmentDate, this.state.value).then(
+      (response) => {
+        this.setState({ availableSlots: response.data });
+        console.log(response.data);
+      }
+    );
+  }
+
+  async handleSetAppointmentDate(n, date) {
+    await this.setState({
+      appointmentDate: date,
+      confirmationTextVisible: true,
+    });
+    this.getSlots();
   }
 
   handleSetAppointmentSlot(slot) {
@@ -59,23 +84,23 @@ class StepAppt extends Component {
       phone: this.state.phone,
       clinic: this.state.clinic,
       slot_date: moment(this.state.appointmentDate).format("YYYY-DD-MM"),
-      slot_time: this.state.appointmentSlot
+      slot_time: this.state.appointmentSlot,
     };
     axios
-      .post(API_BASE + "api/appointmentCreate", newAppointment)
+      .post(ApptService + "api/appointmentCreate", newAppointment)
       // eslint-disable-next-line no-unused-vars
-      .then(response =>
+      .then((response) =>
         this.setState({
           confirmationSnackbarMessage: "Appointment succesfully added!",
           confirmationSnackbarOpen: true,
-          processed: true
+          processed: true,
         })
       )
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         return this.setState({
           confirmationSnackbarMessage: "Appointment failed to save.",
-          confirmationSnackbarOpen: true
+          confirmationSnackbarOpen: true,
         });
       });
   }
@@ -84,7 +109,7 @@ class StepAppt extends Component {
     const { stepIndex } = this.state;
     this.setState({
       stepIndex: stepIndex + 1,
-      finished: stepIndex >= 2
+      finished: stepIndex >= 2,
     });
   };
   //Logic for Steps counts to go back to the previous Steps.
@@ -95,37 +120,14 @@ class StepAppt extends Component {
     }
   };
 
-  handleClinic = (e) => {
-    this.setState({
-      clinic: e.target.value
-
-    })
-  }
-  /*
-  validateEmail(email) {
-    const regex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    return regex.test(email)
-      ? this.setState({ email: email, validEmail: true })
-      : this.setState({ validEmail: false });
-  }
-  validatePhone(phoneNumber) {
-    const regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-    return regex.test(phoneNumber)
-      ? this.setState({ phone: phoneNumber, validPhone: true })
-      : this.setState({ validPhone: false });
-  }
-  */
   checkDisableDate(day) {
     const dateString = moment(day).format("YYYY-DD-MM");
     return (
       this.state.schedule[dateString] === true ||
-      moment(day)
-        .startOf("day")
-        .diff(moment().startOf("day")) < 0
+      moment(day).startOf("day").diff(moment().startOf("day")) < 0
     );
   }
 
-  
   // handleDBReponse(response) {
   //   const appointments = response;
   //   const today = moment().startOf("day"); //start of today 12 am
@@ -197,14 +199,11 @@ class StepAppt extends Component {
   renderAppointmentTimes() {
     if (!this.state.isLoading) {
       const slots = [...Array(8).keys()];
-      return slots.map(slot => {
+      return slots.map((slot) => {
         const appointmentDateString = moment(this.state.appointmentDate).format(
           "YYYY-DD-MM"
         );
-        const time1 = moment()
-          .hour(9)
-          .minute(0)
-          .add(slot, "hours");
+        const time1 = moment().hour(9).minute(0).add(slot, "hours");
         const time2 = moment()
           .hour(9)
           .minute(0)
@@ -224,7 +223,7 @@ class StepAppt extends Component {
             value={slot}
             style={{
               marginBottom: 15,
-              display: meridiemDisabled ? "none" : "inherit"
+              display: meridiemDisabled ? "none" : "inherit",
             }}
             disabled={scheduleDisabled || meridiemDisabled}
           />
@@ -235,7 +234,7 @@ class StepAppt extends Component {
     }
   }
 
-  //Logic for Steps taken to proceed from 1 action to another. 
+  //Logic for Steps taken to proceed from 1 action to another.
   renderStepActions(step) {
     const { stepIndex } = this.state;
 
@@ -263,8 +262,6 @@ class StepAppt extends Component {
     );
   }
 
-
-
   render() {
     const {
       /*finished,*/
@@ -282,13 +279,14 @@ class StepAppt extends Component {
       data.email &&
       data.validPhone &&
       data.validEmail;
+    const { value } = this.state;
     const DatePickerExampleSimple = () => (
       <div>
         <DatePicker
           hintText="Select Date"
           mode={smallScreen ? "portrait" : "landscape"}
-          onChange={(n, date) => this.handleSetAppointmentDate(date)}
-          shouldDisableDate={day => this.checkDisableDate(day)}
+          onChange={(n, date) => this.handleSetAppointmentDate(n, date)}
+          shouldDisableDate={(day) => this.checkDisableDate(day)}
         />
       </div>
     );
@@ -312,13 +310,13 @@ class StepAppt extends Component {
           style={{
             maxWidth: !smallScreen ? "80%" : "100%",
             margin: "auto",
-            marginTop: !smallScreen ? 20 : 0
+            marginTop: !smallScreen ? 20 : 0,
           }}
         >
           <Card
             style={{
               padding: "12px 12px 25px 12px",
-              height: smallScreen ? "100vh" : null
+              height: smallScreen ? "100vh" : null,
             }}
           >
             <Stepper
@@ -327,66 +325,62 @@ class StepAppt extends Component {
               linear={false}
             >
               <Step>
-                <StepLabel>
-                  Start Booking your Vaccination
-                </StepLabel>
+                <StepLabel>Start Booking your Vaccination</StepLabel>
 
                 <StepContent>
-                    <SelectField LabelText="Vaccination Centres">
-                      
-                      <MenuItem primaryText="Punggol Polyclinic" id="Punggol Polyclinic" value="Punggol Polyclinic" onClick={ e => {this.handleClinic(e)}}/>
-                      <MenuItem primaryText="Woodlands Polyclinic"/>
-                      <MenuItem primaryText="Tampines Polyclinic"/>
-                      <MenuItem primaryText="Hougang Polyclinic"/>
-                      <MenuItem primaryText="Ang Mo Kio Polyclinic"/>
-                      <MenuItem primaryText="Tampines Polyclinic"/>
-                      <MenuItem primaryText="Queenstown Polyclinic"/>
-                      <MenuItem primaryText="Bukit Batok Polyclinic"/>
-                      <MenuItem primaryText="Pioneer Polyclinic"/>
-                      <MenuItem primaryText="Outram Polyclinic"/>
-
-                    </SelectField>
-
+                  <SelectField
+                    LabelText="Vaccination Centres"
+                    placeholder="Please select clinic"
+                    value={value}
+                    onChange={this.handleClinicChange}
+                  >
+                    <MenuItem
+                      key={-1}
+                      primaryText="Plese select clinic"
+                      value={-1}
+                      disabled
+                    />
+                    {this.state.clinics.length > 0
+                      ? this.state.clinics.map((item) => {
+                          return (
+                            <MenuItem
+                              key={item.id}
+                              primaryText={item.clinic_name}
+                              value={item.id}
+                              placeholder="Please select clinic"
+                            />
+                          );
+                        })
+                      : ""}
+                  </SelectField>
                 </StepContent>
-                  <Step disabled={!data.appointmentDate}>
-                </Step>
+              </Step>
 
+              <Step>
                 <StepLabel>
-                  Choose an available time for your appointment
+                  Choose an desired time for your appointment
                 </StepLabel>
-                 <StepContent>
+                <StepContent>
                   {DatePickerExampleSimple()}
-                  {this.renderStepActions(0)}
-                    <SelectField
-                    floatingLabelText="AM/PM"
-                    value={data.appointmentMeridiem}
-                    onChange={(evt, key, payload) =>
-                      this.handleSetAppointmentMeridiem(payload)
-                    }
-                    selectionRenderer={value => (value ? "PM" : "AM")}
-                    >
-                      <MenuItem value={0} primaryText="AM" />
-                      <MenuItem value={1} primaryText="PM" />
-                    </SelectField>            
-                      <RadioButtonGroup
-                        style={{
-                          marginTop: 15,
-                          marginLeft: 15
-                        }}
-                        name="appointmentTimes"
-                        defaultSelected={data.appointmentSlot}
-                        onChange={(evt, val) => this.handleSetAppointmentSlot(val)}
-                      >
-                          {this.renderAppointmentTimes()}
-                        </RadioButtonGroup>
-                        {this.renderStepActions(1)}
-                    </StepContent>
-                  </Step>
-                <Step>
-                <StepLabel> 
+
+                  <RadioButtonGroup
+                    style={{
+                      marginTop: 15,
+                      marginLeft: 15,
+                    }}
+                    name="appointmentTimes"
+                    defaultSelected={data.appointmentSlot}
+                    onChange={(evt, val) => this.handleSetAppointmentSlot(val)}
+                  >
+                    {this.renderAppointmentTimes()}
+                  </RadioButtonGroup>
+                  {this.renderStepActions(1)}
+                </StepContent>
+              </Step>
+              <Step>
+                <StepLabel>
                   Share your contact information with us and well send you a
                   reminder
-                
                 </StepLabel>
 
                 <StepContent>
@@ -447,7 +441,7 @@ class StepAppt extends Component {
                         onClick={() =>
                           this.setState({
                             confirmationModalOpen: !this.state
-                              .confirmationModalOpen
+                              .confirmationModalOpen,
                           })
                         }
                         disabled={!contactFormFilled || data.processed}
