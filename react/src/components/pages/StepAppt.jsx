@@ -14,7 +14,6 @@ import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
 import ApptService from "../../services/appAxios";
-//import slot from "../../../../../Covid19/models/slot";
 
 class StepAppt extends Component {
   constructor(props, context) {
@@ -22,7 +21,7 @@ class StepAppt extends Component {
 
     this.state = {
       clinics: [],
-      availableSlots: {},
+      availableSlots: [],
       appointmentDate: {},
       firstName: "",
       lastName: "",
@@ -199,10 +198,10 @@ class StepAppt extends Component {
           "YYYY-DD-MM"
         );
         const time1 = moment().hour(9).minute(0).add(slot, "hours");
-        const time2 = moment()
+        /*   const time2 = moment()
           .hour(9)
           .minute(0)
-          .add(slot + 1, "hours");
+          .add(slot + 1, "hours");*/
         const scheduleDisabled = this.state.schedule[appointmentDateString]
           ? this.state.schedule[
               moment(this.state.appointmentDate).format("YYYY-DD-MM")
@@ -211,18 +210,23 @@ class StepAppt extends Component {
         const meridiemDisabled = this.state.appointmentMeridiem
           ? time1.format("a") === "am"
           : time1.format("a") === "pm";
-        return (
-          <RadioButton
-            label={time1.format("h:mm a") + " - " + time2.format("h:mm a")}
-            key={slot}
-            value={slot}
-            style={{
-              marginBottom: 15,
-              display: meridiemDisabled ? "none" : "inherit",
-            }}
-            disabled={scheduleDisabled || meridiemDisabled}
-          />
-        );
+
+        this.state.availableSlots.length > 0
+          ? this.state.availableSlots.map((item) => {
+              return (
+                <RadioButton
+                  label={item.id}
+                  key={item.id}
+                  value={item.id}
+                  style={{
+                    marginBottom: 15,
+                    display: meridiemDisabled ? "none" : "inherit",
+                  }}
+                  disabled={scheduleDisabled || meridiemDisabled}
+                />
+              );
+            })
+          : null;
       });
     } else {
       return null;
@@ -344,7 +348,23 @@ class StepAppt extends Component {
                 </StepLabel>
                 <StepContent>
                   {DatePickerExampleSimple()}
-                  {this.renderAppointments()}
+                  {/* {this.renderAppointments()} */}
+                  {this.state.availableSlots.length > 0
+                    ? this.state.availableSlots.map((item) => {
+                        console.log("line 177");
+                        console.log(item);
+                        return (
+                          <RadioButton
+                            label={item.id}
+                            key={item.id}
+                            value={item.id}
+                            style={{
+                              marginBottom: 15,
+                            }}
+                          />
+                        );
+                      })
+                    : "No Slot Available"}
                   <RadioButtonGroup
                     style={{
                       marginTop: 15,
