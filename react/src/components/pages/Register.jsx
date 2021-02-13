@@ -1,5 +1,10 @@
-import React, { useState, useEffect }from 'react';
-import Axios from 'axios';
+import React, { Fragment, useState } from 'react';
+import { connect } from 'react-redux';
+import { Link as RouterLink, Redirect } from 'react-router-dom';
+import { setAlert } from '../../actions/alert';
+import { register } from '../../actions/auth';
+import PropTypes from 'prop-types';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,7 +18,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import SiteHeader from '../SiteHeader'
+import SiteHeader from '../layout/SiteHeader'
 
 function Copyright() {
   return (
@@ -48,16 +53,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp() {
-  const []
+const Register = ({ setAlert, register, isAuthenticated }) => {
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    cellphone: '',
+    address: '',
+    password: '',
+    password2: '',
+  });
+
+  const { first_name, last_name, email, cellphone, address, password, password2 } = formData;
+
+  const onChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (password !== password2) {
+      setAlert('Passwords do not match', 'danger');
+    } else {
+      register({ first_name, last_name, email, cellphone, address, password });
+    }
+  };
+
+  if (isAuthenticated) {
+    return <Redirect to="/dashboard" />;
+  }
+
 
   const classes = useStyles();
     <div>
         <SiteHeader/>
     </div>
+    
   return (
-      
-    <Container component="main" maxWidth="xs">
+  <Fragment>
+      <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -78,6 +111,8 @@ export default function SignUp() {
                 id="first_name"
                 label="First Name"
                 autoFocus
+                value={first_name}
+                onChange={onChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -89,29 +124,8 @@ export default function SignUp() {
                 label="Last Name"
                 name="last_name"
                 autoComplete="lname"
-              />
-            </Grid>
-            
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="address"
-                label="Address"
-                name="address"
-                autoComplete="Address"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="cellphone"
-                label="Cell Phone"
-                name="cellphone"
-                autoComplete="cellphone"
+                value={last_name}
+                onChange={onChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -123,6 +137,34 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value={email}
+                onChange={onChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="cellphone"
+                label="Cell Phone"
+                name="cellphone"
+                autoComplete="cellphone"
+                value={cellphone}
+                onChange={onChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="address"
+                label="Address"
+                name="address"
+                autoComplete="Address"
+                value={address}
+                onChange={onChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -135,6 +177,22 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={onChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password2"
+                label="Confirm Password"
+                type="password"
+                id="password2"
+                autoComplete="current-password"
+                value={password2}
+                onChange={onChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -155,7 +213,7 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link component={RouterLink} to="/api/v1/users/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
@@ -166,5 +224,19 @@ export default function SignUp() {
         <Copyright />
       </Box>
     </Container>
+  </Fragment>   
+    
   );
-}
+};
+
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
+};
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { setAlert, register })(Register);

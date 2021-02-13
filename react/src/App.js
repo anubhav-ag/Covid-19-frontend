@@ -1,20 +1,46 @@
-import React, { Component } from 'react';
-import './App.css';
-// eslint-disable-next-line no-unused-vars
-import axios from 'axios'
+import React, { Fragment, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import SiteHeader from './components/layout/SiteHeader';
+import Landing from './components/layout/Landing';
+import Routes from './components/routing/Routes';
+import { LOGOUT } from './actions/types';
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import VaccineAppt from './components/pages/VaccineAppt';
+import './App.css';
 
+import { Provider } from 'react-redux';
+import store from './store';
+import { loadUser } from './actions/auth';
+import setAuthToken from './services/setAuthToken';
 
-class App extends Component {
-  render() {
-    return (
-      <div>
-        <MuiThemeProvider>
-          <VaccineAppt />
-        </MuiThemeProvider>
-      </div>
-    );
-  }
-}
+const App = () => {
+  useEffect(() => {
+    // check for token in LS
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+    }
+    store.dispatch(loadUser());
+
+    // log user out from all tabs if they log out in one tab
+    window.addEventListener('storage', () => {
+      if (!localStorage.token) store.dispatch({ type: LOGOUT });
+    });
+  }, []);
+
+  return (
+     <Provider store={store}>
+      <Router>
+        <Fragment>
+          <SiteHeader />
+            <Switch>
+              <MuiThemeProvider>
+                <Route exact path="/" component={Landing} />
+                <Route component={Routes} />
+              </MuiThemeProvider>
+            </Switch>
+        </Fragment>
+      </Router> 
+    </Provider>
+  );
+};
+
 export default App;
