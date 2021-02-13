@@ -14,6 +14,7 @@ import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 import axios from "axios";
 import ApptService from "../../services/appAxios";
+//import slot from "../../../../../Covid19/models/slot";
 
 class StepAppt extends Component {
   constructor(props, context) {
@@ -21,6 +22,7 @@ class StepAppt extends Component {
 
     this.state = {
       clinics: [],
+      availableSlots: {},
       appointmentDate: {},
       firstName: "",
       lastName: "",
@@ -35,6 +37,7 @@ class StepAppt extends Component {
       smallScreen: window.innerWidth < 768,
       stepIndex: 0,
       value: -1,
+      slotErr: "",
     };
   }
   componentDidMount() {
@@ -56,8 +59,9 @@ class StepAppt extends Component {
   getSlots() {
     ApptService.getSlots(this.state.appointmentDate, this.state.value).then(
       (response) => {
-        this.setState({ availableSlots: response.data });
-        console.log(response.data);
+        this.setState({ availableSlots: response.data.availableSlots });
+        console.log(typeof this.state.availableSlots);
+        console.log(this.state.availableSlots);
       }
     );
   }
@@ -67,7 +71,9 @@ class StepAppt extends Component {
       appointmentDate: date,
       confirmationTextVisible: true,
     });
-    this.getSlots();
+    await this.getSlots();
+    console.log("checking at line75 handlesetapptdate");
+    console.log(this.renderAppointments());
   }
 
   handleSetAppointmentSlot(slot) {
@@ -128,39 +134,6 @@ class StepAppt extends Component {
     );
   }
 
-  // handleDBReponse(response) {
-  //   const appointments = response;
-  //   const today = moment().startOf("day"); //start of today 12 am
-  //   const initialSchedule = {};
-  //   initialSchedule[today.format("YYYY-DD-MM")] = true;
-  //   const schedule = !appointments.length
-  //     ? initialSchedule
-  //     : appointments.reduce((currentSchedule, appointment) => {
-  //         const { slot_date, slot_time } = appointment;
-  //         const dateString = moment(slot_date, "YYYY-DD-MM").format(
-  //           "YYYY-DD-MM"
-  //         );
-  //         !currentSchedule[slot_date]
-  //           ? (currentSchedule[dateString] = Array(8).fill(false))
-  //           : null;
-  //         Array.isArray(currentSchedule[dateString])
-  //           ? (currentSchedule[dateString][slot_time] = true)
-  //           : null;
-  //         return currentSchedule;
-  //       }, initialSchedule);
-
-  //   for (let day in schedule) {
-  //     let slots = schedule[day];
-  //     slots.length
-  //       ? slots.every(slot => slot === true) ? (schedule[day] = true) : null
-  //       : null;
-  //   }
-
-  //   this.setState({
-  //     schedule: schedule
-  //   });
-  // }
-
   renderAppointmentConfirmation() {
     const spanStyle = { color: "#00C853" };
     return (
@@ -196,6 +169,28 @@ class StepAppt extends Component {
       </section>
     );
   }
+
+  renderAppointments() {
+    {
+      this.state.availableSlots.length > 0
+        ? this.state.availableSlots.map((item) => {
+            console.log("line 177");
+            console.log(item);
+            return (
+              <RadioButton
+                label={item.id}
+                key={item.id}
+                value={item.id}
+                style={{
+                  marginBottom: 15,
+                }}
+              />
+            );
+          })
+        : "No Slot Available";
+    }
+  }
+
   renderAppointmentTimes() {
     if (!this.state.isLoading) {
       const slots = [...Array(8).keys()];
@@ -290,20 +285,7 @@ class StepAppt extends Component {
         />
       </div>
     );
-    const modalActions = [
-      /*
-      <FlatButton
-        label="Cancel"
-        primary={false}
-        onClick={() => this.setState({ confirmationModalOpen: false })}
-      />,
-      <FlatButton
-        label="Confirm"
-        style={{ backgroundColor: "#00C853 !important" }}
-        primary={true}
-        onClick={() => this.handleSubmit()}
-      />*/
-    ];
+    const modalActions = [];
     return (
       <div>
         <section
@@ -358,11 +340,11 @@ class StepAppt extends Component {
 
               <Step>
                 <StepLabel>
-                  Choose an desired time for your appointment
+                  Choose an desired date for your appointment
                 </StepLabel>
                 <StepContent>
                   {DatePickerExampleSimple()}
-
+                  {this.renderAppointments()}
                   <RadioButtonGroup
                     style={{
                       marginTop: 15,
@@ -370,10 +352,8 @@ class StepAppt extends Component {
                     }}
                     name="appointmentTimes"
                     defaultSelected={data.appointmentSlot}
-                    onChange={(evt, val) => this.handleSetAppointmentSlot(val)}
-                  >
-                    {this.renderAppointmentTimes()}
-                  </RadioButtonGroup>
+                    onChange={() => this.renderAppointments()}
+                  ></RadioButtonGroup>
                   {this.renderStepActions(1)}
                 </StepContent>
               </Step>
@@ -477,5 +457,4 @@ class StepAppt extends Component {
     );
   }
 }
-
 export default StepAppt;
