@@ -1,4 +1,4 @@
-import api from '../services/api';
+import api from '../utils/api';
 import { setAlert } from './alert';
 import {
   REGISTER_SUCCESS,
@@ -13,7 +13,7 @@ import {
 // Load User
 export const loadUser = () => async dispatch => {
   try {
-    const res = await api.get('/api/auth');
+    const res = await api.get('/auth');
 
     dispatch({
       type: USER_LOADED,

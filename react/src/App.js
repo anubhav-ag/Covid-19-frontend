@@ -1,16 +1,20 @@
 import React, { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import SiteHeader from './components/layout/SiteHeader';
+import Navbar from './components/layout/Navbar';
 import Landing from './components/layout/Landing';
 import Routes from './components/routing/Routes';
 import { LOGOUT } from './actions/types';
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import './App.css';
+// eslint-disable-next-line no-unused-vars
+import axios from 'axios'
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
+// Redux
 import { Provider } from 'react-redux';
 import store from './store';
 import { loadUser } from './actions/auth';
-import setAuthToken from './services/setAuthToken';
+import setAuthToken from './utils/setAuthToken';
+
 
 const App = () => {
   useEffect(() => {
@@ -26,21 +30,24 @@ const App = () => {
     });
   }, []);
 
-  return (
-     <Provider store={store}>
-      <Router>
-        <Fragment>
-          <SiteHeader />
-            <Switch>
-              <MuiThemeProvider>
-                <Route exact path="/" component={Landing} />
-                <Route component={Routes} />
-              </MuiThemeProvider>
-            </Switch>
-        </Fragment>
-      </Router> 
-    </Provider>
-  );
+  
+    return (
+      <div>
+      <Provider store={store}>
+        <Router>
+          <Fragment>
+            <Navbar />
+              <Switch>
+                <MuiThemeProvider>
+                  <Route exact path="/" component={Landing} />
+                  <Route component={Routes} />
+                </MuiThemeProvider>
+              </Switch>
+          </Fragment>
+        </Router>
+      </Provider>
+      </div>
+    );
 };
 
 export default App;
