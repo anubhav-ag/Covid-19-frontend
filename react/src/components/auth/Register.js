@@ -61,25 +61,20 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
     cellphone: '',
     address: '',
     password: '',
-    password2: ''
   });
 
-  const { first_name, last_name, email, cellphone, address, password, password2 } = formData;
+  const { first_name, last_name, email, cellphone, address, password } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (password !== password2) {
-      setAlert('Passwords do not match', 'danger');
-    } else {
       register({ first_name, last_name, email, cellphone, address, password});
-    }
   };
 
   if (isAuthenticated) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/api/v1/users/dashboard" />;
   }
 
   return (
@@ -93,7 +88,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -172,20 +167,6 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
                 id="password"
                 autoComplete="current-password"
                 value={password}
-                onChange={onChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Confirm Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password2}
                 onChange={onChange}
               />
             </Grid>

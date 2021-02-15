@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
@@ -35,8 +35,8 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
         <Typography variant="h6" className={classes.title}>
             Covid-19 Vaccination Booking 
         </Typography>
-          <Button Link to="/Logout" onClick={logout} color="inherit" >Logout</Button>
-          <Button Link to="/Dashboard" color="inherit">Dashboard</Button>
+          <Button component={RouterLink} to="/Logout" onClick={logout} color="inherit" >Logout</Button>
+          <Button component={RouterLink} to="/api/v1/users/dashboard" color="inherit">Dashboard</Button>
         </Toolbar>
       </AppBar>
     </div>
@@ -49,8 +49,9 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
         <Typography variant="h6" className={classes.title}>
             Covid-19 Vaccination Booking 
         </Typography>
-          <Button Link to="/Login" color="inherit" >Login</Button>
-          <Button Link to="/Landing" color="inherit">Home</Button>
+          <Button component={RouterLink} to="/api/v1/users/login" color="inherit" >Login</Button>
+          <Button component={RouterLink} to="/api/v1/users/register" color="inherit" >Register</Button>
+          <Button component={RouterLink} to="/api/v1/users/login" color="inherit">Home</Button>
         </Toolbar>
       </AppBar>
     </div>

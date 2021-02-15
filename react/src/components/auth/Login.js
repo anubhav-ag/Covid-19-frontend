@@ -67,7 +67,7 @@ const Login = ({ login, isAuthenticated }) => {
   };
 
   if (isAuthenticated) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/api/v1/users/dashboard" />;
   }
 
   return (

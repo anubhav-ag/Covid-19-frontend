@@ -5,17 +5,16 @@ import PropTypes from 'prop-types';
 
 const Landing = ({ isAuthenticated }) => {
   if (isAuthenticated) {
-    return <Redirect to='/dashboard' />;
+    return <Redirect to='/api/v1/users/dashboard' />;
   }
 
   return (
     <section className='landing'>
       <div className='dark-overlay'>
         <div className='landing-inner'>
-          <h1 className='x-large'>Developer Connector</h1>
+          <h1 className='x-large'>Your SG Covid19 Vaccination Starts Here</h1>
           <p className='lead'>
-            Create a developer profile/portfolio, share posts and get help from
-            other developers
+            Welcome to Vaccination Booking Page
           </p>
           <div className='buttons'>
             <Link to='/register' className='btn btn-primary'>
