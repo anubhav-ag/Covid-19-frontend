@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Navbar = ({ auth: { isAuthenticated }, logout }) => {
+const Navbar = ({ auth: { isAuthenticated, user }, logout }) => {
   const classes = useStyles();
 
   const authLinks = (
@@ -34,6 +34,18 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
           <Typography variant="h6" className={classes.title}>
             Covid-19 Vaccination Booking
           </Typography>
+          <p></p>
+          {user && !user.apptData ? (
+            <Button
+              component={RouterLink}
+              to="/createappointment"
+              color="inherit"
+            >
+              Book Appointment
+            </Button>
+          ) : (
+            ""
+          )}
           <Button
             component={RouterLink}
             to="/"
@@ -42,11 +54,7 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
           >
             Logout
           </Button>
-          <Button
-            component={RouterLink}
-            to="/api/v1/users/dashboard"
-            color="inherit"
-          >
+          <Button component={RouterLink} to="/users/dashboard" color="inherit">
             Dashboard
           </Button>
         </Toolbar>
@@ -63,24 +71,16 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
           </Typography>
           <Button
             component={RouterLink}
-            to="/api/v1/users/login"
+            to="/createappointment"
             color="inherit"
           >
+            Book Appointment
+          </Button>
+          <Button component={RouterLink} to="/users/login" color="inherit">
             Login
           </Button>
-          <Button
-            component={RouterLink}
-            to="/api/v1/users/register"
-            color="inherit"
-          >
+          <Button component={RouterLink} to="/users/register" color="inherit">
             Register
-          </Button>
-          <Button
-            component={RouterLink}
-            to="/api/v1/createappointment"
-            color="inherit"
-          >
-            Home
           </Button>
         </Toolbar>
       </AppBar>

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 const Landing = ({ isAuthenticated }) => {
   if (isAuthenticated) {
-    return <Redirect to="/api/v1/users/dashboard" />;
+    return <Redirect to="/users/dashboard" />;
   }
 
   return (
@@ -15,10 +15,10 @@ const Landing = ({ isAuthenticated }) => {
           <h1 className="x-large">Your SG Covid19 Vaccination Starts Here</h1>
           <p className="lead">Welcome to Vaccination Booking Page</p>
           <div className="buttons">
-            <Link to="/api/v1/users/register" className="btn btn-primary">
+            <Link to="/users/register" className="btn btn-primary">
               Sign Up
             </Link>
-            <Link to="/api/v1/users/login" className="btn btn-light">
+            <Link to="/users/login" className="btn btn-light">
               Login
             </Link>
           </div>

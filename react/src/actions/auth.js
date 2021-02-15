@@ -79,37 +79,28 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 // Logout
-export const logout = () => ({ type: LOGOUT });
-
-//calls for create Appointment part only
-const baseUrl = "http://localhost:5000/api/v1";
-
-// https://github.com/axios/axios#creating-an-instance
-const axiosInstance = axios.create({
-  baseURL: baseUrl,
-  timeout: 5000, // 5000ms = 5s
-});
+export const logout = () => {
+  console.log("logoutCalled");
+  return { type: LOGOUT };
+};
 
 const appointmentAPI = {
   listClinics: () => {
-    return axiosInstance.get("/clinics");
+    return api.get("/api/v1/clinics");
   },
   getSlots: (appointmentDate, clinicID) => {
-    return axiosInstance.get(
-      `/slots?appointmentDate=${moment(appointmentDate).format(
+    return api.get(
+      `/api/v1/slots?appointmentDate=${moment(appointmentDate).format(
         "YYYY-MM-DD"
       )}&clinicID=${clinicID}`
     );
   },
   createAppointment: (clinicID, appointmentDate, timeslot) => {
-    return axiosInstance.post(
-      `/createappointment`,
-      qs.stringify({
-        clinic_id: clinicID,
-        date: appointmentDate,
-        time_slot: timeslot,
-      })
-    );
+    return api.post(`/api/v1/createmyappointment`, {
+      clinic_id: clinicID,
+      date: appointmentDate,
+      time_slot: timeslot,
+    });
   },
 };
 

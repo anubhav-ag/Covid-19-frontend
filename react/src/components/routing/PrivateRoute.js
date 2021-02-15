@@ -1,9 +1,9 @@
 /* eslint react/prop-types: 0 */
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import Spinner from '../layout/Spinner';
+import React from "react";
+import { Route, Redirect } from "react-router-dom";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import Spinner from "../layout/Spinner";
 
 const PrivateRoute = ({
   component: Component,
@@ -12,24 +12,24 @@ const PrivateRoute = ({
 }) => (
   <Route
     {...rest}
-    render={props =>
+    render={(props) =>
       loading ? (
         <Spinner />
       ) : isAuthenticated ? (
         <Component {...props} />
       ) : (
-        <Redirect to="/api/v1/users/login" />
+        <Redirect to="/users/login" />
       )
     }
   />
 );
 
 PrivateRoute.propTypes = {
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

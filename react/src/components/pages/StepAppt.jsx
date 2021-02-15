@@ -14,6 +14,8 @@ import Card from "material-ui/Card";
 import { Step, Stepper, StepLabel, StepContent } from "material-ui/Stepper";
 import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
 import ApptService from "../../actions/auth";
+import { loadUser } from "../../actions/auth";
+import store from "../../store";
 
 class StepAppt extends Component {
   constructor(props, context) {
@@ -49,8 +51,9 @@ class StepAppt extends Component {
       .then((createApptResponse) => {
         console.log(createApptResponse);
         if (createApptResponse.status == 200) {
+          store.dispatch(loadUser());
           //redirect to dashboard
-          this.props.history.push("/api/v1/users/dashboard");
+          this.props.history.push("/users/dashboard");
           this.setState({
             confirmationModalOpen: false,
           });
