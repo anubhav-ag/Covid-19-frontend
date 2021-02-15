@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = ({ auth: { isAuthenticated, user }, logout }) => {
   const classes = useStyles();
 
+  //Authenticated User Access 
   const authLinks = (
     <div className={classes.root}>
       <AppBar position="static">
@@ -62,6 +63,7 @@ const Navbar = ({ auth: { isAuthenticated, user }, logout }) => {
     </div>
   );
 
+  //Guest User Access
   const guestLinks = (
     <div className={classes.root}>
       <AppBar position="static">
@@ -71,7 +73,7 @@ const Navbar = ({ auth: { isAuthenticated, user }, logout }) => {
           </Typography>
           <Button
             component={RouterLink}
-            to="/createappointment"
+            to="/users/register"
             color="inherit"
           >
             Book Appointment
