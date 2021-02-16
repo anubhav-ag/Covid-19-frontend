@@ -81,7 +81,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
   };
 
   if (isAuthenticated) {
-    return <Redirect to="/users/dashboard" />;
+    return <Redirect component={RouterLink} to="/users/dashboard" />;
   }
 
   return (
