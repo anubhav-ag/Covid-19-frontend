@@ -16,6 +16,7 @@ module.exports = {
   rules: {
     "no-unused-vars": "off",
     "react/prop-types": "off",
+    "react/jsx-key": "off"
   },
   parser: "babel-eslint",
 };

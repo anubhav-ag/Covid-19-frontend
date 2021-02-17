@@ -8,6 +8,7 @@ import Profiles from "../profiles/Profiles";
 import Profile from "../profile/Profile";
 import StepAppt from "../pages/StepAppt";
 import PrivateRoute from "../routing/PrivateRoute";
+import Heatmap from "../../heatmap/Heatmap"
 
 const Routes = (props) => {
   return (
@@ -18,6 +19,7 @@ const Routes = (props) => {
         <Route exact path="/users/login" component={Login} />
         <Route exact path="/users/profile" component={Profiles} />
         <Route exact path="/users/profile/:id" component={Profile} />
+        <Route exact path="/users/heatmap" component={Heatmap} />
         <PrivateRoute exact path="/users/dashboard" component={Dashboard} />
         <PrivateRoute exact path="/createappointment" component={StepAppt} />
       </Switch>

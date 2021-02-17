@@ -68,7 +68,7 @@ const Navbar = ({ auth: { isAuthenticated, user }, logout }) => {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6"  className={classes.title}>
             Covid-19 Vaccination Booking
           </Typography>
           <Button

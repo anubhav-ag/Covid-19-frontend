@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-
+import "./Heatmap.css";
 import {
   MenuItem,
   FormControl,
@@ -17,14 +14,8 @@ import { sortData, prettyPrintStat } from "./util";
 import numeral from "numeral";
 import Map from "./Map";
 import "leaflet/dist/leaflet.css";
-import "./Landing.css";
-import "./Landing.css";
 
-
-const Landing = ({ isAuthenticated }) => {
-  if (isAuthenticated) {
-    return <Redirect to="/users/dashboard" />;
-  }
+const Heatmap = () => {
   const [country, setInputCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
   const [countries, setCountries] = useState([]);
@@ -61,24 +52,7 @@ const Landing = ({ isAuthenticated }) => {
     getCountriesData();
   }, []);
 
-  // useEffect(() => {
-  //   const getSgData = async () => {
-  //     fetch("https://disease.sh/v3/covid-19/countries")
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         const countries = data.map((country) => ({
-  //           name: country.country,
-  //           value: country.countryInfo.iso2,
-  //         }));
-  //         let sortedData = sortData(data);
-  //         setCountries(countries);
-  //         setMapCountries(data);
-  //         setTableData(sortedData);
-  //       });
-  //   };
-
-  //   getSgData();
-  // }, []);
+  console.log(casesType);
 
   const onCountryChange = async (e) => {
     const countryCode = e.target.value;
@@ -97,15 +71,13 @@ const Landing = ({ isAuthenticated }) => {
       });
   };
 
-
-
   return (
     <div className="app">
       <div className="app__left">
         <div className="app__header">
-          <h1>Your SG Covid-19 Vaccination Starts Here</h1>
+          <h1>COVID-19 Tracker</h1>
           <FormControl className="app__dropdown">
-            {/* <Select
+            <Select
               variant="outlined"
               value={country}
               onChange={onCountryChange}
@@ -114,7 +86,7 @@ const Landing = ({ isAuthenticated }) => {
               {countries.map((country) => (
                 <MenuItem value={country.value}>{country.name}</MenuItem>
               ))}
-            </Select> */}
+            </Select>
           </FormControl>
         </div>
         <div className="app__stats">
@@ -142,14 +114,14 @@ const Landing = ({ isAuthenticated }) => {
             total={numeral(countryInfo.deaths).format("0.0a")}
           />
         </div>
-        {/* <Map
+        <Map
           countries={mapCountries}
           casesType={casesType}
           center={mapCenter}
           zoom={mapZoom}
-        /> */}
+        />
       </div>
-      {/* <Card className="app__right">
+      <Card className="app__right">
         <CardContent>
           <div className="app__information">
             <h3>Live Cases by Country</h3>
@@ -158,19 +130,9 @@ const Landing = ({ isAuthenticated }) => {
             <LineGraph casesType={casesType} />
           </div>
         </CardContent>
-      </Card> */}
+      </Card>
     </div>
-  
   );
-
 };
 
-Landing.propTypes = {
-  isAuthenticated: PropTypes.bool,
-};
-
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
-
-export default connect(mapStateToProps)(Landing);
+export default Heatmap;
