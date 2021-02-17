@@ -142,12 +142,12 @@ const Landing = ({ isAuthenticated }) => {
             total={numeral(countryInfo.deaths).format("0.0a")}
           />
         </div>
-        {/* <Map
+        <Map
           countries={mapCountries}
           casesType={casesType}
           center={mapCenter}
           zoom={mapZoom}
-        /> */}
+        />
       </div>
       {/* <Card className="app__right">
         <CardContent>

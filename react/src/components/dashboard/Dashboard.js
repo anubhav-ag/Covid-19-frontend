@@ -94,35 +94,38 @@ const Dashboard = ({
                 </TableCell>
               </TableRow>
             </TableHead>
+
                 <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      Ang Mo Kio Polyclinc
-                      {/* {user.clinicData.clinic_name} */}
-                      </TableCell>
-                      <TableCell>
-                        13 March 2021
-                        {/* {user.slotData.date} */}
-                      </TableCell>
-                      <TableCell>
-                        1:30pm
-                        {/* {user.slotData.time_slot} */}
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          color="primary"
-                          label="Open"
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          color="secondary"
-                          label="Cancel"
-                          size="small"
-                        />
-                      </TableCell>
-                  </TableRow>
+                  {user && user.apptData ? (
+                      <TableRow>
+                      <TableCell>                       
+                        {user.clinicData.clinic_name}
+                        </TableCell>
+                        <TableCell>                        
+                          {user.slotData.date}
+                        </TableCell>
+                        <TableCell>                       
+                          {user.slotData.time_slot}
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            color="primary"
+                            label="Booked"
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            color="secondary"
+                            label="Cancel"
+                            size="small"
+                          />
+                        </TableCell>
+                    </TableRow>
+                    ) : (
+                        <TableRow>Please book your appointment</TableRow>
+                  )} 
+                  
                 </TableBody>
           </Table>
         </Box>
@@ -150,16 +153,6 @@ export default connect(mapStateToProps, { getCurrentProfile, deleteAccount })(
   Dashboard
 );
 
-      {/* <p className="lead">
-        <i className="fas fa-user" /> Welcome {user && user.name}
-      </p> */}
+    
       
-      {/* {user && user.apptData ? (
-        <div>
-          <p>{user.clinicData.clinic_name}</p>
-          <p>{user.slotData.date}</p>
-          <p>{user.slotData.time_slot}</p>
-        </div>
-      ) : (
-        <p>Please book your appointment</p>
-      )} */}
+   
