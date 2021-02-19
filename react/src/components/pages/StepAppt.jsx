@@ -338,14 +338,25 @@ class StepAppt extends Component {
               <Step>
                 <StepLabel>Please confirm appointment Details</StepLabel>
                 <StepContent>
-                  <p>Clinic Selected: </p>
-                  {this.getClinicName(this.state.value)}
                   <p>
-                    Date Selected:{" "}
-                    {moment(this.state.appointmentDate).format("DD-MM-YYYY")}{" "}
+                    Clinic Selected:{" "}
+                    <strong>{this.getClinicName(this.state.value)}</strong>
                   </p>
-                  <p>Time Slot Selected: </p>
-                  {this.getTimeSlot(this.state.selectedOption)}
+                  <p>
+                    Date Selected:
+                    <strong>
+                      {" "}
+                      {moment(this.state.appointmentDate).format(
+                        "DD-MM-YYYY"
+                      )}{" "}
+                    </strong>
+                  </p>
+                  <p>
+                    Time Slot Selected:{" "}
+                    <strong>
+                      {this.getTimeSlot(this.state.selectedOption)}
+                    </strong>
+                  </p>
 
                   {this.renderStepActions(2)}
                 </StepContent>

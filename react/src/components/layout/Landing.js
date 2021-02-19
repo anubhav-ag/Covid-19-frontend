@@ -19,12 +19,11 @@ import Map from "./Map";
 import "leaflet/dist/leaflet.css";
 import "./Landing.css";
 
-
 const Landing = ({ isAuthenticated }) => {
   if (isAuthenticated) {
     return <Redirect to="/users/dashboard" />;
   }
-  const [sgcovid, sgCovidData] =useState({});
+  const [sgcovid, sgCovidData] = useState({});
   const [countryInfo, setCountryInfo] = useState({});
   const [countries, setCountries] = useState([]);
   const [mapCountries, setMapCountries] = useState([]);
@@ -32,15 +31,17 @@ const Landing = ({ isAuthenticated }) => {
   const [casesType, setCasesType] = useState("cases");
   const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
   const [mapZoom, setMapZoom] = useState(3);
-  
+
   useEffect(() => {
-    fetch("https://api.apify.com/v2/key-value-stores/yaPbKe9e5Et61bl7W/records/LATEST?disableRedirect=true")
+    fetch(
+      "https://api.apify.com/v2/key-value-stores/yaPbKe9e5Et61bl7W/records/LATEST?disableRedirect=true"
+    )
       .then((response) => response.json())
       .then((data) => {
         sgCovidData(data);
       });
   }, []);
-  
+
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
       .then((response) => response.json())
@@ -67,30 +68,28 @@ const Landing = ({ isAuthenticated }) => {
 
     getCountriesData();
   }, []);
-  
+
   return (
     <div className="app">
       <div className="app__left">
         <div className="app__header">
-          <h1>Your SG Covid-19 Vaccination Starts Here</h1>
+          <h1>SINGAPORE COVID-19 LATEST SITUATION</h1>
         </div>
-          <div className="sg_total">
-        <InfoBox
+        <div className="sg_total">
+          <InfoBox
             onClick={(e) => setCasesType("cases")}
             title="SG Infected Cases (Total)"
             isRed
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.infected)}
-            total={numeral(countryInfo.cases).format("0.0a")}
           />
-          </div>
-          <div className="app_sg1">
+        </div>
+        <div className="app_sg1">
           <InfoBox
             title="SG Active Cases# "
             isRed
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.activeCases)}
-            total={numeral(countryInfo.cases).format("0.0a")}
           />
           <InfoBox
             onClick={(e) => setCasesType("recovered")}
@@ -98,30 +97,26 @@ const Landing = ({ isAuthenticated }) => {
             isGreen
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.recovered)}
-            total={numeral(countryInfo.cases).format("0.0a")}
           />
-          </div>
-          <div className="app_sg2">
+        </div>
+        <div className="app_sg2">
           <InfoBox
             title="SG In Community Facilites*"
             isGreen
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.inCommunityFacilites)}
-            total={numeral(countryInfo.cases).format("0.0a")}
           />
           <InfoBox
             title="SG Hospitalised (Stable)"
             isGreen
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.stableHospitalized)}
-            total={numeral(countryInfo.cases).format("0.0a")}
           />
           <InfoBox
             title="SG Hospitalised (Critical)"
             isRed
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.criticalHospitalized)}
-            total={numeral(countryInfo.cases).format("0.0a")}
           />
           <InfoBox
             onClick={(e) => setCasesType("deaths")}
@@ -129,9 +124,9 @@ const Landing = ({ isAuthenticated }) => {
             isRed
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.deceased)}
-            total={numeral(countryInfo.cases).format("0.0a")}
           />
         </div>
+        <h1>WORLDWIDE COVID-19 LATEST SITUATION </h1>
         <Map
           countries={mapCountries}
           casesType={casesType}
