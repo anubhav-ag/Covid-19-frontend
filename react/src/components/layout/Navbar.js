@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
 
 import { makeStyles } from "@material-ui/core/styles";
+import Link from '@material-ui/core/Link';
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
@@ -32,8 +33,10 @@ const Navbar = ({ auth: { isAuthenticated, user }, logout }) => {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Covid-19 Vaccination Booking
+        <Typography variant="h6"  className={classes.title}>
+            <Link href="/" color="inherit">
+            SG Covid-19 Vaccination Booking
+            </Link>
           </Typography>
           <p></p>
           {user && !user.apptData ? (
@@ -69,7 +72,9 @@ const Navbar = ({ auth: { isAuthenticated, user }, logout }) => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6"  className={classes.title}>
-            SG Covid-19 Vaccination Booking
+            <Link href="/" color="inherit">
+                SG Covid-19 Vaccination Booking
+            </Link>
           </Typography>
           <Button
             component={RouterLink}

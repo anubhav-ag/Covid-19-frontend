@@ -2,7 +2,6 @@ import React, { Fragment, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getCurrentProfile, deleteAccount } from "../../actions/profile";
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Avatar from "@material-ui/core/Avatar";
@@ -49,15 +48,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = ({
   getCurrentProfile,
-  deleteAccount,
   auth: { user },
-  profile: { profile },
 }) => {
   const classes = useStyles();
-  useEffect(() => {
-    getCurrentProfile();
-  }, [getCurrentProfile]);
-
+  
   return (
     <Fragment>
       <Container component="main" maxWidth="xs">
@@ -149,7 +143,7 @@ const mapStateToProps = (state) => ({
   profile: state.profile,
 });
 
-export default connect(mapStateToProps, { getCurrentProfile, deleteAccount })(
+export default connect(mapStateToProps)(
   Dashboard
 );
 

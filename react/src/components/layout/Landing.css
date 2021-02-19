@@ -29,7 +29,7 @@
     font-size: 2rem;
   }
   
-  .app_sg {
+  .app_sg1 {
     display: flex;
     justify-content: space-between;
     color: #6a5d5d;
@@ -37,10 +37,21 @@
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
-
-  .app__ww {
+  .app_sg2 {
     display: flex;
     justify-content: space-between;
+    color: #6a5d5d;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .sg_total {
+    display: flex;
+    justify-content: space-between;
+    color: #6a5d5d;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
   }
   
   .app__left {

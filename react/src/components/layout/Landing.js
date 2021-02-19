@@ -24,8 +24,7 @@ const Landing = ({ isAuthenticated }) => {
   if (isAuthenticated) {
     return <Redirect to="/users/dashboard" />;
   }
-  const [sgcovid, sgcoviddata] =useState([]);
-  const [country, setInputCountry] = useState("worldwide");
+  const [sgcovid, sgCovidData] =useState({});
   const [countryInfo, setCountryInfo] = useState({});
   const [countries, setCountries] = useState([]);
   const [mapCountries, setMapCountries] = useState([]);
@@ -38,7 +37,7 @@ const Landing = ({ isAuthenticated }) => {
     fetch("https://api.apify.com/v2/key-value-stores/yaPbKe9e5Et61bl7W/records/LATEST?disableRedirect=true")
       .then((response) => response.json())
       .then((data) => {
-        sgcoviddata(data);
+        sgCovidData(data);
       });
   }, []);
   
@@ -68,85 +67,25 @@ const Landing = ({ isAuthenticated }) => {
 
     getCountriesData();
   }, []);
-
-  const onCountryChange = async (e) => {
-    const countryCode = e.target.value;
-
-    const url =
-      countryCode === "worldwide"
-        ? "https://disease.sh/v3/covid-19/all"
-        : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
-    await fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setInputCountry(countryCode);
-        setCountryInfo(data);
-        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
-        setMapZoom(4);
-      });
-  };
-
+  
   return (
     <div className="app">
       <div className="app__left">
         <div className="app__header">
           <h1>Your SG Covid-19 Vaccination Starts Here</h1>
-          <FormControl className="app__dropdown">
-            <Select
-              variant="outlined"
-              value={country}
-              onChange={onCountryChange}
-            >
-              <MenuItem value="worldwide">Worldwide</MenuItem>
-              {countries.map((country) => (
-                <MenuItem value={country.value}>{country.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
         </div>
-        <div className="app_sg">
+          <div className="sg_total">
         <InfoBox
-            onClick={(e) => setCasesType("infected")}
-            title="SG Infected Cases"
+            onClick={(e) => setCasesType("cases")}
+            title="SG Infected Cases (Total)"
             isRed
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.infected)}
             total={numeral(countryInfo.cases).format("0.0a")}
           />
+          </div>
+          <div className="app_sg1">
           <InfoBox
-            onClick={(e) => setCasesType("discharged")}
-            title="SG Discharged Cases"
-            isGreen
-            active={casesType === "cases"}
-            cases={prettyPrintStat(sgcovid.discharged)}
-            total={numeral(countryInfo.cases).format("0.0a")}
-          />
-          <InfoBox
-            onClick={(e) => setCasesType("inCommunityFacilites")}
-            title="SG In Community Facilites*"
-            isGreen
-            active={casesType === "cases"}
-            cases={prettyPrintStat(sgcovid.inCommunityFacilites)}
-            total={numeral(countryInfo.cases).format("0.0a")}
-          />
-          <InfoBox
-            onClick={(e) => setCasesType("stableHospitalized")}
-            title="SG Hospitalised (Stable)"
-            isGreen
-            active={casesType === "cases"}
-            cases={prettyPrintStat(sgcovid.stableHospitalized)}
-            total={numeral(countryInfo.cases).format("0.0a")}
-          />
-          <InfoBox
-            onClick={(e) => setCasesType("criticalHospitalized")}
-            title="SG Hospitalised (Critical)"
-            isRed
-            active={casesType === "cases"}
-            cases={prettyPrintStat(sgcovid.criticalHospitalized)}
-            total={numeral(countryInfo.cases).format("0.0a")}
-          />
-          <InfoBox
-            onClick={(e) => setCasesType("activeCases")}
             title="SG Active Cases# "
             isRed
             active={casesType === "cases"}
@@ -154,46 +93,43 @@ const Landing = ({ isAuthenticated }) => {
             total={numeral(countryInfo.cases).format("0.0a")}
           />
           <InfoBox
-            onClick={(e) => setCasesType("deceased")}
-            title="SG Infected Cases"
-            isRed
-            active={casesType === "cases"}
-            cases={prettyPrintStat(sgcovid.deceased)}
-            total={numeral(countryInfo.cases).format("0.0a")}
-          />
-          <InfoBox
             onClick={(e) => setCasesType("recovered")}
             title="SG Discharged Cases"
-            isRed
+            isGreen
             active={casesType === "cases"}
             cases={prettyPrintStat(sgcovid.recovered)}
             total={numeral(countryInfo.cases).format("0.0a")}
           />
-        </div>
-
-        <div className="app__ww">
+          </div>
+          <div className="app_sg2">
           <InfoBox
-            onClick={(e) => setCasesType("cases")}
-            title="Coronavirus Cases"
-            isRed
+            title="SG In Community Facilites*"
+            isGreen
             active={casesType === "cases"}
-            cases={prettyPrintStat(countryInfo.todayCases)}
+            cases={prettyPrintStat(sgcovid.inCommunityFacilites)}
             total={numeral(countryInfo.cases).format("0.0a")}
           />
           <InfoBox
-            onClick={(e) => setCasesType("recovered")}
-            title="Recovered"
-            active={casesType === "recovered"}
-            cases={prettyPrintStat(countryInfo.todayRecovered)}
-            total={numeral(countryInfo.recovered).format("0.0a")}
+            title="SG Hospitalised (Stable)"
+            isGreen
+            active={casesType === "cases"}
+            cases={prettyPrintStat(sgcovid.stableHospitalized)}
+            total={numeral(countryInfo.cases).format("0.0a")}
+          />
+          <InfoBox
+            title="SG Hospitalised (Critical)"
+            isRed
+            active={casesType === "cases"}
+            cases={prettyPrintStat(sgcovid.criticalHospitalized)}
+            total={numeral(countryInfo.cases).format("0.0a")}
           />
           <InfoBox
             onClick={(e) => setCasesType("deaths")}
-            title="Deaths"
+            title="Deaths^"
             isRed
-            active={casesType === "deaths"}
-            cases={prettyPrintStat(countryInfo.todayDeaths)}
-            total={numeral(countryInfo.deaths).format("0.0a")}
+            active={casesType === "cases"}
+            cases={prettyPrintStat(sgcovid.deceased)}
+            total={numeral(countryInfo.cases).format("0.0a")}
           />
         </div>
         <Map
@@ -214,9 +150,7 @@ const Landing = ({ isAuthenticated }) => {
         </CardContent>
       </Card>
     </div>
-  
   );
-
 };
 
 Landing.propTypes = {
