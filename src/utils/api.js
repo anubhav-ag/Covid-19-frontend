@@ -4,7 +4,7 @@ import { LOGOUT } from "../actions/types";
 
 const api = axios.create({
   baseURL: "https://sg-covid-19-backend.herokuapp.com/",
-  timeout: 5000, // 5000ms = 5s
+  timeout: 15000, // 5000ms = 5s
   headers: {
     "Content-Type": "application/json",
   },
