@@ -16,7 +16,7 @@ import {
 // Load User
 export const loadUser = () => async (dispatch) => {
   try {
-    const res = await api.get("/users/dashboard");
+    const res = await api.get("/api/v1/users/dashboard");
 
     dispatch({
       type: USER_LOADED,
@@ -32,7 +32,7 @@ export const loadUser = () => async (dispatch) => {
 // Register User
 export const register = (formData) => async (dispatch) => {
   try {
-    const res = await api.post("/users/register", formData);
+    const res = await api.post("/api/v1/users/register", formData);
 
     dispatch({
       type: REGISTER_SUCCESS,
@@ -57,7 +57,7 @@ export const login = (email, password) => async (dispatch) => {
   const body = { email, password };
 
   try {
-    const res = await api.post("/users/login", body);
+    const res = await api.post("/api/v1/users/login", body);
 
     dispatch({
       type: LOGIN_SUCCESS,
@@ -86,7 +86,7 @@ export const logout = () => {
 
 const appointmentAPI = {
   listClinics: () => {
-    return api.get("/clinics");
+    return api.get("/api/v1/clinics");
   },
   getSlots: (appointmentDate, clinicID) => {
     return api.get(
@@ -96,7 +96,7 @@ const appointmentAPI = {
     );
   },
   createAppointment: (clinicID, appointmentDate, timeslot) => {
-    return api.post(`/createmyappointment`, {
+    return api.post(`/api/v1/createmyappointment`, {
       clinic_id: clinicID,
       date: appointmentDate,
       time_slot: timeslot,
