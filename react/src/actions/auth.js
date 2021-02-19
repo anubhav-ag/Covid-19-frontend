@@ -90,7 +90,7 @@ const appointmentAPI = {
   },
   getSlots: (appointmentDate, clinicID) => {
     return api.get(
-      `/slots?appointmentDate=${moment(appointmentDate).format(
+      `/api/v1/slots?appointmentDate=${moment(appointmentDate).format(
         "YYYY-MM-DD"
       )}&clinicID=${clinicID}`
     );
@@ -101,6 +101,10 @@ const appointmentAPI = {
       date: appointmentDate,
       time_slot: timeslot,
     });
+  },
+
+  cancelappt: () => {
+    return api.delete("/api/v1/users/cancelappt");
   },
 };
 
