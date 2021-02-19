@@ -3,7 +3,7 @@ import store from "../store";
 import { LOGOUT } from "../actions/types";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/",
+  baseURL: "https://sg-covid-19-backend.herokuapp.com/",
   timeout: 5000, // 5000ms = 5s
   headers: {
     "Content-Type": "application/json",
